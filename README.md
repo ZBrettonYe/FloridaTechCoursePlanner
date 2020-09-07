@@ -1,7 +1,14 @@
 # FloridaTechCoursePlanner
 A web application to help student and faculty to plan for next semester
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.0.
+
+## Set up
+1. install `node` & `npm` from [nodejs](https://nodejs.org/en/download/)
+2. check install `node -v && npm -v`
+3. cd into project directory run `npm install`
+
+For Angular Environment check run `ng v`
 
 ## Development server
 
