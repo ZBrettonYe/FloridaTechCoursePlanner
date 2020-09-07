@@ -1,0 +1,13 @@
+span.header-title {
+    font-size: 1.5em;   /* Make it bigger to match the font size of school logo */
+    color: rgb(119, 0, 0);  /* Match school logo color */
+}
+
+button.big {
+    height: 64px;   /* Make button taller */
+}
+
+span.foot-note {
+    font-size: 12px;    /* Smaller text in foot note */
+    line-height: normal;
+}

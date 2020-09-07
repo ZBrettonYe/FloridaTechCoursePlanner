@@ -1,0 +1,35 @@
+.cal-week-view .cal-time-events {
+    overflow-y: auto;
+}
+
+.cal-day-headers {
+    overflow-y: scroll;
+}
+
+div.mat-tab-body-wrapper, mat-tab-body, div.cal-week-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+}
+
+mwl-calendar-week-view {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+div.cal-day-column {
+    display: table-cell;
+}
+
+div.cal-day-columns {
+    height: min-content;
+}
+
+table.summary {
+    width: 100%;
+}
+
+table.summary tr:hover {
+    background-color: #f0f0f0;
+}

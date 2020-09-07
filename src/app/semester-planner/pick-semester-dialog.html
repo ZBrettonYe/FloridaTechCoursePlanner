@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Pick a Semester</h1>
+
+<div mat-dialog-actions fxLayoutGap="4px">
+  <button mat-stroked-button color="primary" class="big" [mat-dialog-close]="'spring'">
+    <h3>Spring {{data.springYear}}</h3>
+  </button>
+
+  <button mat-stroked-button color="primary" class="big" [mat-dialog-close]="'summer'">
+    <h3>Summer {{data.summerYear}}</h3>
+  </button>
+
+  <button mat-stroked-button color="primary" class="big" [mat-dialog-close]="'fall'">
+    <h3>Fall {{data.fallYear}}</h3>
+  </button>
+</div>

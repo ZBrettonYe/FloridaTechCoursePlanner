@@ -1,0 +1,15 @@
+/* Increase space between the toggle and input field. Otherwise they are too close */
+mat-slide-toggle {
+    margin-right: 12px;
+}
+
+/* Manually set the hight. Otherwise the height defaults to 0 */
+cdk-virtual-scroll-viewport {
+    height: 256px;
+}
+
+/* Align toggle with input field. Otherwise toggle appears to be too hight */
+:host > div {
+    align-items: center;
+    border-radius: 8px;
+}

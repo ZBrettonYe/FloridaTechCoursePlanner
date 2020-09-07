@@ -1,0 +1,146 @@
+<mat-card fxFill fxLayout="column" style="overflow: auto; padding: 0px;">
+  <mat-tab-group fxFlex="grow" style="overflow: auto;" [animationDuration]="300">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="column">
+          <span>Calendar</span>
+
+          <span *ngIf="nSectionsNotShown; else allSectionsShown;">({{nSectionsNotShown}} Sections Not Shown)</span>
+          <ng-template #allSectionsShown><span>(All Sections are Shown)</span></ng-template>
+        </div>
+      </ng-template>
+
+      <mwl-calendar-week-view
+        [viewDate]="viewDate"
+        [headerTemplate]="headerTemplate"
+        [eventTitleTemplate]="eventTitleTemplate"
+        [events]="events"
+        [refresh]="refresh"
+        (eventClicked)="eventClicked($event)"
+      >
+      </mwl-calendar-week-view>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Summary <br>
+        ({{sections.length}} Sections Selected)
+      </ng-template>
+
+      <table class="summary">
+        <tr>
+          <th>CRN</th>
+          <th>Prefix</th>
+          <th>Course No.</th>
+          <th>Sec.</th>
+          <th>Course Title</th>
+          <th>Days</th>
+          <th>Time</th>
+          <th>CRs.</th>
+          <th></th>
+        </tr>
+
+        <tr *ngFor="let section of sections">
+          <td>{{section.crn}}</td>
+          <td>{{section.course.subject.code}}</td>
+          <td>{{section.course.course}}</td>
+          <td>{{section.section}}</td>
+          <td>{{section.title}}</td>
+          <td>
+            <span *ngFor="let schedule of section.schedules">{{schedule.days}} <br></span>
+          </td>
+          <td>
+            <span *ngFor="let schedule of section.schedules">{{schedule.startTime}} - {{schedule.endTime}} <br></span>
+          </td>
+          <td>
+            {{section.creditHours[0]}}
+            <span *ngIf="section.creditHours[0] !== section.creditHours[1]"> - {{section.creditHours[1]}}</span>
+          </td>
+          <td fxLayout="row" fxLayoutGap="8px">
+            <button mat-stroked-button color="primary" (click)="gotoCourse(section)">Goto Course</button>
+            <button mat-stroked-button color="warn" (click)="removeSection(section)">Remove</button>
+          </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Registration Form">
+      <div fxFill fxLayout="row" style="overflow: hidden;">
+        <div fxLayout="column" style="width: 200px; margin: 12px;">
+          <button mat-stroked-button color="primary" (click)="generateRegForm()" style="margin-bottom: 16px;">🚀 Generate Form</button>
+
+          <div fxFlex style="overflow-y: auto;">
+            <mat-form-field *ngFor="let formField of studentInfoFormFields">
+              <mat-label>{{formField.label}}</mat-label>
+              <input matInput [placeholder]="formField.placeholder" [(ngModel)]="formField.value">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div fxFlex id="regForm">
+          <embed src="assets/form/registrationForm.pdf" style="width: 100%; height: 100%;">
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>
+
+<ng-template
+  #headerTemplate
+  let-days="days"
+  let-locale="locale"
+  let-dayHeaderClicked="dayHeaderClicked"
+  let-eventDropped="eventDropped"
+  let-trackByWeekDayHeaderDate="trackByWeekDayHeaderDate"
+  let-dragEnter="dragEnter"
+>
+  <div class="cal-day-headers" role="row" >
+    <div
+      class="cal-header"
+      *ngFor="let day of days; trackBy: trackByWeekDayHeaderDate"
+      [class.cal-past]="day.isPast"
+      [class.cal-today]="day.isToday"
+      [class.cal-future]="day.isFuture"
+      [class.cal-weekend]="day.isWeekend"
+      [ngClass]="day.cssClass"
+      (mwlClick)="dayHeaderClicked.emit({ day: day, sourceEvent: $event })"
+      mwlDroppable
+      dragOverClass="cal-drag-over"
+      (drop)="
+        eventDropped.emit({
+          event: $event.dropData.event,
+          newStart: day.date
+        })
+      "
+      (dragEnter)="dragEnter.emit({ date: day.date })"
+      tabindex="0"
+      role="columnheader"
+    >
+      <b>{{ day.date | calendarDate: 'weekViewColumnHeader':locale }}</b>
+      <!-- <br/>
+      <span>{{day.date | calendarDate: 'weekViewColumnSubHeader':locale}}</span> -->
+    </div>
+  </div>
+</ng-template>
+
+<ng-template
+  #eventTitleTemplate
+  let-event="event"
+  let-view="view"
+  style="line-height: 1px; white-space: normal;"
+>
+  <!-- <span
+    class="cal-event-title"
+    [innerHTML]="event.title | calendarEventTitle: view:event"
+    [attr.aria-hidden]="{} | calendarA11y: 'hideEventTitle'"
+  ></span> -->
+
+  <span
+    class="cal-event-title"
+    [attr.aria-hidden]="{} | calendarA11y: 'hideEventTitle'"
+  >
+    {{event.meta.crn}} - {{event.meta.course.subject.code}} {{event.meta.course.course}}<br>
+    {{event.meta.title}}<br>
+    {{event.meta.instructor?.name}}
+  </span>
+</ng-template>

@@ -1,0 +1,27 @@
+/* Highlight mouse hover row */
+.mat-row:hover {
+    background-color: #f0f0f0;
+}
+
+/* Cell border. It paris with hover background color. */
+.mat-cell:not(:last-child) {
+    border-right: 4px solid white;
+}
+
+/* Keep font weight the same as button's */
+/* It's on the bolder side but it's easy to read */
+.mat-cell {
+    font-weight: 500;
+    padding: 4px;
+}
+
+/* Make cursor behave like hovering over a link on clickable cells */
+.mat-column-subject, .mat-column-course, .mat-column-title, .mat-column-instructor, .mat-column-creditHours {
+    cursor: pointer;
+}
+
+/* Keep things in paginator on 1 line */
+div.mat-paginator-container {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}

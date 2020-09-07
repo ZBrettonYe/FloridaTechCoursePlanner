@@ -1,0 +1,79 @@
+<div fxLayout="column" fxLayoutAlign="space-between" style="height: 100%; width: 100%;">
+  <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="center center">
+    <mat-toolbar fxLayoutGap="16px">
+      <span fxFlex class="header-title">
+        <img src="assets/image/Florida Tech.png" alt="Logo of Florida Tech" height="40" style="margin-right: 8px;">
+        Course Planner Bundle 2
+      </span>
+
+      <button mat-stroked-button color="primary" routerLink="/section-explorer" routerLinkActive="active">
+        🚀 Section Explorer
+      </button>
+      <button mat-stroked-button color="primary" routerLink="/semester-planner" routerLinkActive="active">
+        🚀 Semester Planner
+      </button>
+    </mat-toolbar>
+
+    <div fxLayout="row" fxLayoutGap="16px">
+      <mat-card style="width: 360px;">
+        <img mat-card-image src="assets/image/Section Explorer.png" alt="Screenshot of Section Explorer">
+
+        <mat-card-content>
+          <h1>Section Explorer</h1>
+          <p>Use Section Explorer to navigate through the pool of all sections offered in current school year.</p>
+          <p>Works for All Campuses.</p>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-stroked-button color="primary" fxFlex class="big" routerLink="/section-explorer" routerLinkActive="active">
+            <h2>🚀 Launch Section Explorer</h2>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card style="width: 360px;">
+        <img mat-card-image src="assets/image/Semester Planner.png" alt="Screenshot of Section Explorer">
+
+        <mat-card-content>
+          <h1>Semester Planner</h1>
+          <p>Use Semester Planner to figure out your detailed schedule and generate relevant forms.</p>
+          <p>Works for Main Campus Only.</p>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-stroked-button color="primary" fxFlex class="big" routerLink="/semester-planner" routerLinkActive="active">
+            <h2>🚀 Launch Semester Planner</h2>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="center center">
+    <img src="assets/image/CSE Cup Badge.png" alt="Trophy of 2020 Spring CSE Senior Cup First Place Award" width="256">
+
+    <mat-toolbar fxLayoutGap="16px">
+      <span class="foot-note" fxFlex>
+        {{versionInfo}} <br>
+        Built with ❤️ By Xu Zhen (zxu2016@my.fit.edu)<br>
+        Using Angular 9, Docker, and Scrapy <br>
+      </span>
+
+      <button mat-stroked-button color="warn" (click)="resetSettings()">
+        Reset Settings
+      </button>
+
+      <a mat-stroked-button href="https://github.com/XuZhen86/FloridaTechCoursePlanner2" target="_blank">
+        <img src="assets/image/GitHub Mark.png" alt="GitHub Mark" height="16">
+        github.com
+      </a>
+
+      <a mat-stroked-button href="https://github.fit.edu/zxu2016/FloridaTechCoursePlanner2" target="_blank">
+        <img src="assets/image/GitHub Mark.png" alt="GitHub Mark" height="16">
+        github.fit.edu
+      </a>
+
+    </mat-toolbar>
+  </div>
+
+</div>

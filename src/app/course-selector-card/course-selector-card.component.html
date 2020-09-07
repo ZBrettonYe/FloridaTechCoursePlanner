@@ -1,0 +1,381 @@
+<mat-card fxFill fxLayout="column" style="overflow: auto; padding: 0px;">
+  <mat-tab-group fxFlex="grow" style="overflow: auto;" [animationDuration]="300">
+    <mat-tab label="Subjects">
+      <mat-nav-list fxFlex="grow">
+        <div *ngFor="let subject of subjects; index as i; first as isFirst;">
+          <span
+            matSubheader
+            *ngIf="isFirst || subjects[i-1].code[0] != subject.code[0]"
+            style="margin-top: 0px; color: rgb(255,87,34); background-color: whitesmoke;"
+            [attr.id]="'subject_' + subject.code[0]"
+          >
+            {{subject.code[0]}}
+          </span>
+
+          <mat-list-item (click)="subjectClick(subject)">
+            <div style="width: max-content; height: max-content;" mat-list-avatar>
+              <span [ngClass]="subject.code !== subject.name ? 'badge badge-primary' : 'badge badge-info'">{{subject.code}}</span>
+            </div>
+
+            <span matLine>{{subject.name}}</span>
+            <span matLine>{{subject.courses.length}} Courses</span>
+          </mat-list-item>
+        </div>
+      </mat-nav-list>
+
+      <button
+        mat-raised-button
+        [matMenuTriggerFor]="subjectPrefixMenu"
+        #subjectPrefixMenuTrigger="matMenuTrigger"
+        (mouseenter)="subjectPrefixMenuTrigger.openMenu()"
+        style="position: absolute; top: 8px; right: 8px;"
+      >
+        Goto
+      </button>
+
+      <mat-menu #subjectPrefixMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let prefix of subjectPrefixes"
+          (mouseenter)="scrollIntoView('subject_' + prefix)"
+        >
+          {{prefix}}
+        </button>
+      </mat-menu>
+    </mat-tab>
+
+    <mat-tab label="Courses" [disabled]="courses.length === 0">
+      <mat-nav-list>
+        <div *ngFor="let course of courses; index as i; first as isFirst;">
+          <span
+            matSubheader
+            *ngIf="isFirst || courseNumberLevel(courses[i-1]) !== courseNumberLevel(course)"
+            style="margin-top: 0px; color: rgb(255,87,34); background-color: whitesmoke;"
+            [attr.id]="'course_' + courseNumberLevel(course)"
+          >
+            {{courseNumberLevel(course)}}
+          </span>
+
+          <mat-list-item
+            (click)="courseClick(course)"
+            (mouseenter)="courseMouseEnter(course)"
+            [style.background-color]="courseBackgroundColor(course)"
+          >
+            <div style="width: max-content; height: max-content;" fxLayout="column" mat-list-avatar>
+              <span class="badge badge-primary">{{course.course}}</span>
+              <span class="badge badge-light">{{course.subject.code}}</span>
+            </div>
+
+            <span matLine fxLayoutGap="2px">
+              <span fxFlex>{{course.title}}</span>
+              <span class="badge badge-info" *ngFor="let tag of course.tags">{{tag.code}}</span>
+            </span>
+
+            <span matLine>
+              {{course.creditHours[0]}}
+              <span *ngIf="course.creditHours[0] !== course.creditHours[1]">- {{course.creditHours[1]}}</span>
+              Credits
+            </span>
+            <span matLine>{{course.sections.length}} Sections</span>
+          </mat-list-item>
+        </div>
+      </mat-nav-list>
+
+      <button
+        mat-raised-button
+        [matMenuTriggerFor]="courseLevelMenu"
+        #courseLevelMenuTrigger="matMenuTrigger"
+        (mouseenter)="courseLevelMenuTrigger.openMenu()"
+        style="position: absolute; top: 8px; right: 8px;"
+      >
+        Goto
+      </button>
+
+      <mat-menu #courseLevelMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let level of COURSE_LEVELS"
+          [disabled]="!isCourseLevelExists(level)"
+          (mouseenter)="scrollIntoView('course_' + level + '000 Level')"
+        >
+          {{level}}000 Level
+        </button>
+      </mat-menu>
+    </mat-tab>
+
+    <mat-tab label="Sections" [disabled]="sections.length === 0">
+      <mat-nav-list fxFlex="grow">
+        <mat-list-item
+          *ngFor="let section of sections"
+          (click)="sectionClick(section)"
+          (mouseenter)="sectionMouseEnter(section)"
+          (mouseleave)="sectionMouseLeave()"
+          [style.background-color]="sectionBackgroundColor(section)"
+          style="height: min-content; padding: 12px 0px"
+        >
+          <div style="width: max-content; height: max-content;" fxLayout="column" mat-list-avatar>
+            <span class="badge badge-primary">{{section.crn}}</span>
+            <span class="badge badge-light">{{section.course.subject.code}} {{section.course.course}}</span>
+          </div>
+
+          <span matLine fxLayoutGap="2px">
+            <span fxFlex>{{section.instructor?.name ? section.instructor!.name : '(TBA)'}}</span>
+            <span class="badge badge-success">{{section.session}}</span>
+            <span class="badge badge-light">{{section.cap[0]}} / {{section.cap[1]}}</span>
+            <mat-progress-spinner [diameter]="20" [value]="100 * section.cap[0] / section.cap[1]">
+            </mat-progress-spinner>
+          </span>
+
+          <span matLine>
+            <table class="schedule" *ngIf="section.schedules.length; else noData">
+              <tr *ngFor="let s of section.schedules" fxLayoutGap="8px">
+                <td>{{s.days}}</td>
+                <td>{{s.startTime}} - {{s.endTime}}</td>
+                <td>{{scheduleBuilding(s)}} {{s.room}}</td>
+              </tr>
+            </table>
+            <ng-template #noData>(No schedules)</ng-template>
+          </span>
+
+          <span matLine *ngFor="let note of section.notes">{{note}}</span>
+
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-tab>
+  </mat-tab-group>
+
+  <mat-accordion>
+    <!-- Trick expansion panel to have a top margin -->
+    <span></span>
+
+    <mat-expansion-panel #expansionPanel style="overflow: auto;" [style.height]="expansionPanel.expanded ? '360px' : ''">
+      <mat-expansion-panel-header>
+        <mat-panel-title><span class="badge badge-primary">{{detailTitle}}</span></mat-panel-title>
+        <mat-panel-description>{{detailDescription}}</mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div *ngIf="expansionPanel.expanded && detailMode === 'course'">
+        <div cdkDropList (cdkDropListDropped)="cdkDropListDropped(this.courseInfoOrders, $event)" fxLayout="column">
+          <div cdkDrag [fxFlexOrder]="courseInfoOrders[0]">
+            <h3 cdkDragHandle> Sections <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <table style="width: 100%;">
+              <tr>
+                <th>CRN</th>
+                <th>Section</th>
+                <th>Instructor</th>
+                <th>Enroll</th>
+                <th>Notes</th>
+              </tr>
+
+              <tr *ngFor="let section of detailCourse.sections">
+                <td>{{section.crn}}</td>
+                <td>{{section.section}}</td>
+                <td>
+                  <span *ngIf="section.instructor as instructor; else noData">{{instructor!.name}}</span>
+                  <ng-template #noData>(None)</ng-template>
+                </td>
+                <td>{{section.cap[0]}} / {{section.cap[1]}}</td>
+                <td>
+                  <div *ngIf="section.notes.length; else noData" fxLayout="column">
+                    <span *ngFor="let note of section.notes">{{note}}</span>
+                  </div>
+                  <ng-template #noData>(None)</ng-template>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="courseInfoOrders[1]">
+            <h3 cdkDragHandle> Description <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <span *ngIf="detailCourse.description as description; else noData">{{description}}</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="courseInfoOrders[2]">
+            <h3 cdkDragHandle> Tags <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailCourse.tags.length; else noData" fxLayout="column" fxLayoutGap="2px">
+              <div *ngFor="let tag of detailCourse.tags">
+                <span class="badge badge-primary" style="width: 32px; margin-right: 16px;">{{tag.code}}</span>
+                {{tag.name}}
+              </div>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="courseInfoOrders[3]">
+            <h3 cdkDragHandle> Prerequisite <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailCourse.prerequisite as prerequisite; else noData"
+              innerHTML="{{prerequisite | prerequisiteHighlight: highlight.checked}}"
+            ></div>
+            <ng-template #noData>(None)</ng-template>
+
+            <div fxLayoutAlign="end">
+              <mat-slide-toggle #highlight [checked]="true">Highlight</mat-slide-toggle>
+            </div>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="courseInfoOrders[4]">
+            <h3 cdkDragHandle> Restrictions <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailCourse.restrictions.length; else noData" fxLayout="column">
+              <span *ngFor="let text of detailCourse.restrictions" style="white-space: pre-wrap;">{{text}}</span>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="expansionPanel.expanded && detailMode === 'section'">
+        <div cdkDropList (cdkDropListDropped)="cdkDropListDropped(this.sectionInfoOrders, $event)" fxLayout="column">
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[0]">
+            <h3 cdkDragHandle> Description <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <span *ngIf="detailSection.course.description as description; else noData">{{description}}</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[1]">
+            <h3 cdkDragHandle> Instructor <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div>
+              Name:
+              <span *ngIf="detailInstructor?.name as name; else noData">{{name}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Email:
+              <span *ngIf="detailInstructor?.email as email; else noData">{{email}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Phone:
+              <span *ngIf="detailInstructor?.phone as phone; else noData">{{phone}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Building:
+              <span *ngIf="detailInstructor?.building as building; else noData">{{building!.code}} ({{building!.name}})</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Room:
+              <span *ngIf="detailInstructor?.room as room; else noData">{{room}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Title:
+              <span *ngIf="detailInstructor?.title as title; else noData">{{title}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[2]">
+            <h3 cdkDragHandle> Tags <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailSection.course.tags.length; else noData" fxLayout="column" fxLayoutGap="2px">
+              <div *ngFor="let tag of detailSection.course.tags">
+                <span class="badge badge-primary" style="width: 32px; margin-right: 16px;">{{tag.code}}</span>
+                {{tag.name}}
+              </div>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[3]">
+            <h3 cdkDragHandle> Prerequisite <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailSection.course.prerequisite as prerequisite; else noData"
+              innerHTML="{{prerequisite | prerequisiteHighlight: highlight.checked}}"
+            ></div>
+            <ng-template #noData>(None)</ng-template>
+
+            <div fxLayoutAlign="end">
+              <mat-slide-toggle #highlight [checked]="true">Highlight</mat-slide-toggle>
+            </div>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[4]">
+            <h3 cdkDragHandle> Notes <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailSection.notes.length; else noData" fxLayout="column">
+              <span *ngFor="let text of detailSection.notes">{{text}}</span>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[5]">
+            <h3 cdkDragHandle> Cross List Courses <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailSection.crossListCourses.length; else noData" fxLayout="column">
+              <span *ngFor="let course of detailSection.crossListCourses">{{course[0]}} {{course[1]}}</span>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[6]">
+            <h3 cdkDragHandle> Restrictions <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailSection.restrictions.length; else noData" fxLayout="column">
+              <span *ngFor="let text of detailSection.restrictions" style="white-space: pre-wrap;">{{text}}</span>
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div cdkDrag [fxFlexOrder]="sectionInfoOrders[7]">
+            <h3 cdkDragHandle> Department <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+            <div *ngIf="detailInstructor?.department as department; else noData">
+              <div>
+                Name:
+                <span *ngIf="department!.name as name; else noData">{{name}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+              <div>
+                Email:
+                <span *ngIf="department!.email as email; else noData">{{email}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+              <div>
+                Phone:
+                <span *ngIf="department!.phone as phone; else noData">{{phone}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+              <div>
+                Fax:
+                <span *ngIf="department!.fax as fax; else noData">{{fax}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+              <div>
+                Website:
+                <span *ngIf="department!.website as website; else noData">{{website}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+              <div>
+                Location:
+                <span *ngIf="department!.building as building; else noData">{{building!.code}} ({{building!.name}})</span>
+                <ng-template #noData>(None)</ng-template>
+              </div>
+
+            </div>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>

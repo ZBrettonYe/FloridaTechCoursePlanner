@@ -1,0 +1,24 @@
+<div fxLayout="row" [@highlight]="highlightState">
+  <mat-slide-toggle [checked]="config.checked" (change)="slideToggleChange($event.checked)"></mat-slide-toggle>
+
+  <mat-form-field (click)="formFiledClick()">
+    <mat-label>{{config.label}}</mat-label>
+
+    <input #formFieldInput matInput [matAutocomplete]="matAutocomplete" [formControl]="formControl">
+
+    <button mat-button matSuffix mat-icon-button [disabled]="formControl.value == ''" (click)="formControl.setValue('')">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <mat-autocomplete #matAutocomplete="matAutocomplete" autoActiveFirstOption="true" panelWidth="20em">
+      <cdk-virtual-scroll-viewport itemSize="24">
+        <mat-option *cdkVirtualFor="let option of filteredOptions | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </cdk-virtual-scroll-viewport>
+    </mat-autocomplete>
+
+    <mat-hint align="end">{{config.options.length}} Entries</mat-hint>
+
+  </mat-form-field>
+</div>

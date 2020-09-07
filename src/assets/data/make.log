@@ -1,0 +1,48 @@
+> _department.raw.json
+scrapy crawl department -o _department.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+> _employee.raw.json
+scrapy crawl employee -o _employee.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+> _section.raw.json
+scrapy crawl section -o _section.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+> _pawsSection.raw.json
+scrapy crawl pawsSection -o _pawsSection.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+python3 campus.py
+python3 requirement.py
+python3 tag.py
+python3 description.py
+python3 title.py
+python3 course.py
+> _pawsBuilding.raw.json
+scrapy crawl pawsBuilding -o _pawsBuilding.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+Warning: BEH 5060 skipped because some sections do not have schedule table. Expected 1 tables, got 0.
+Warning: COM 3440 skipped because some sections do not have schedule table. Expected 2 tables, got 1.
+Warning: COM 2223 skipped because some sections do not have schedule table. Expected 31 tables, got 28.
+Warning: CSE 5400 skipped because some sections do not have schedule table. Expected 1 tables, got 0.
+Warning: CVE 5999 skipped because some sections do not have schedule table. Expected 8 tables, got 7.
+Warning: CYB 5899 skipped because some sections do not have schedule table. Expected 3 tables, got 2.
+Warning: OCN 4704 skipped because some sections do not have schedule table. Expected 1 tables, got 0.
+Warning: OCN 5704 skipped because some sections do not have schedule table. Expected 1 tables, got 0.
+Warning: SPS 4010 skipped because some sections do not have schedule table. Expected 2 tables, got 1.
+python3 building.py
+> _pawsCourse.raw.json
+scrapy crawl pawsCourse -o _pawsCourse.raw.json -s LOG_LEVEL=WARNING -s CLOSESPIDER_ERRORCOUNT=1
+python3 level.py
+python3 scheduleType.py
+python3 restriction.py
+python3 prerequisite.py
+python3 courseAttribute.py
+python3 course2.py
+python3 subject.py
+python3 course3.py
+python3 department.py
+python3 employee.py
+python3 note.py
+python3 session.py
+python3 section.py
+Warning: Section is not sorted.
+python3 metaData.py
+cp building.min.json campus.min.json course3.min.json courseAttribute.min.json department.min.json description.min.json employee.min.json level.min.json metaData.min.json note.min.json prerequisite.min.json requirement.min.json restriction.min.json scheduleType.min.json section.min.json session.min.json subject.min.json tag.min.json title.min.json dist
+
+real	5m23.084s
+user	3m10.603s
+sys	0m4.136s

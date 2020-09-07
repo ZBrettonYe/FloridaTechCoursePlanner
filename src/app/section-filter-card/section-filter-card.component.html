@@ -1,0 +1,18 @@
+<mat-card style="padding: 0px;">
+  <!-- style="padding: 16px 0px 16px 16px;" -->
+  <mat-card-content style="padding: 16px">
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <mat-radio-group fxLayoutGap="16px" [(ngModel)]="semester" (change)="optionUpdate()">
+        <mat-radio-button value="spring">Spring<br>{{semesterYears[0]}}</mat-radio-button>
+        <mat-radio-button value="summer">Summer<br>{{semesterYears[1]}}</mat-radio-button>
+        <mat-radio-button value="fall">Fall<br>{{semesterYears[2]}}</mat-radio-button>
+      </mat-radio-group>
+
+      <button mat-stroked-button color="warn" (click)="resetFilters()">Reset Filters</button>
+    </div>
+
+    <div *ngFor="let filterRow of filterConfigs" fxLayout="row" style="width: fit-content;" fxLayoutGap="16px">
+      <app-section-filter-option *ngFor="let filterConfig of filterRow" [config]="filterConfig"></app-section-filter-option>
+    </div>
+  </mat-card-content>
+</mat-card>

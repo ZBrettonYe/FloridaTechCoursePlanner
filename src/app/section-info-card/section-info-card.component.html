@@ -1,0 +1,245 @@
+<mat-card style="width: 100%; overflow: auto; padding: 0px;">
+  <mat-tab-group fxFill style="overflow-y: hidden;">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Section <br> CRN {{section?.crn}}
+      </ng-template>
+
+      <div *ngIf="section; else noData" cdkDropList (cdkDropListDropped)="drop(this.sectionOrders, $event)" fxLayout="column">
+        <div cdkDrag [fxFlexOrder]="sectionOrders[0]">
+          <h3 cdkDragHandle> Description <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <span *ngIf="section.course.description as description; else noData">{{description}}</span>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="sectionOrders[1]">
+          <h3 cdkDragHandle> Tags <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="section.course.tags.length; else noData" fxLayout="column" fxLayoutGap="2px">
+            <div *ngFor="let tag of section.course.tags">
+              <span class="badge badge-primary" style="width: 32px; margin-right: 16px;">{{tag.code}}</span>
+              {{tag.name}}
+            </div>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="sectionOrders[2]">
+          <h3 cdkDragHandle> Prerequisite <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="section.course.prerequisite as prerequisite; else noData"
+            innerHTML="{{prerequisite | prerequisiteHighlight: highlight.checked}}"
+          ></div>
+          <ng-template #noData>(None)</ng-template>
+
+          <div fxLayoutAlign="end">
+            <mat-slide-toggle #highlight [checked]="true">Highlight</mat-slide-toggle>
+          </div>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="sectionOrders[3]">
+          <h3 cdkDragHandle> Notes <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="section.notes.length; else noData" fxLayout="column">
+            <span *ngFor="let text of section.notes">{{text}}</span>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="sectionOrders[4]">
+          <h3 cdkDragHandle> Cross List Courses <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="section.crossListCourses.length; else noData" fxLayout="column">
+            <span *ngFor="let course of section.crossListCourses">{{course[0]}} {{course[1]}}</span>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="sectionOrders[5]">
+          <h3 cdkDragHandle> Restrictions <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="section.restrictions.length; else noData" fxLayout="column">
+            <span *ngFor="let text of section.restrictions" style="white-space: pre-wrap;">{{text}}</span>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+      </div>
+      <ng-template #noData>(Hover over a section to see details)</ng-template>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Course <br> {{course?.subject.code}} {{course?.course}}
+      </ng-template>
+
+      <div *ngIf="course; else noData" cdkDropList (cdkDropListDropped)="drop(this.courseOrders, $event)" fxLayout="column">
+        <div cdkDrag [fxFlexOrder]="courseOrders[0]">
+          <h3 cdkDragHandle> Sections <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <table style="width: 100%;">
+            <tr>
+              <th>CRN</th>
+              <th>Section</th>
+              <th>Instructor</th>
+              <th>Enroll</th>
+              <th>Notes</th>
+            </tr>
+
+            <tr *ngFor="let section of course.sections">
+              <td>{{section.crn}}</td>
+              <td>{{section.section}}</td>
+              <td>
+                <span *ngIf="section.instructor as instructor; else noData">{{instructor!.name}}</span>
+                <ng-template #noData>(None)</ng-template>
+              </td>
+              <td>{{section.cap[0]}} / {{section.cap[1]}}</td>
+              <td>
+                <div *ngIf="section.notes.length; else noData" fxLayout="column">
+                  <span *ngFor="let note of section.notes">{{note}}</span>
+                </div>
+                <ng-template #noData>(None)</ng-template>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="courseOrders[1]">
+          <h3 cdkDragHandle> Description <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <span *ngIf="course.description as description; else noData">{{description}}</span>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="courseOrders[2]">
+          <h3 cdkDragHandle> Tags <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="course.tags.length; else noData" fxLayout="column" fxLayoutGap="2px">
+            <div *ngFor="let tag of course.tags">
+              <span class="badge badge-primary" style="width: 32px; margin-right: 16px;">{{tag.code}}</span>
+              {{tag.name}}
+            </div>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="courseOrders[3]">
+          <h3 cdkDragHandle> Prerequisite <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="course.prerequisite as prerequisite; else noData"
+            innerHTML="{{prerequisite | prerequisiteHighlight: highlight.checked}}"
+          ></div>
+          <ng-template #noData>(None)</ng-template>
+
+          <div fxLayoutAlign="end">
+            <mat-slide-toggle #highlight [checked]="true">Highlight</mat-slide-toggle>
+          </div>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="courseOrders[4]">
+          <h3 cdkDragHandle> Restrictions <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="course.restrictions.length; else noData" fxLayout="column">
+            <span *ngFor="let text of course.restrictions" style="white-space: pre-wrap;">{{text}}</span>
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+      </div>
+      <ng-template #noData>(Hover over a section to see details)</ng-template>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Instructor <br> {{instructor?.name}}
+      </ng-template>
+
+      <div *ngIf="instructor; else noData" cdkDropList (cdkDropListDropped)="drop(this.instructorOrders, $event)" fxLayout="column">
+        <div cdkDrag [fxFlexOrder]="instructorOrders[0]">
+          <h3 cdkDragHandle> Contact <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div>
+            Email:
+            <span *ngIf="instructor!.email as email; else noData">{{email}}</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div>
+            Phone:
+            <span *ngIf="instructor!.phone as phone; else noData">{{phone}}</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="instructorOrders[1]">
+          <h3 cdkDragHandle> Location <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div>
+            Building:
+            <span *ngIf="instructor!.building as building; else noData">{{building!.code}} ({{building!.name}})</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+
+          <div>
+            Room:
+            <span *ngIf="instructor!.room as room; else noData">{{room}}</span>
+            <ng-template #noData>(None)</ng-template>
+          </div>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="instructorOrders[2]">
+          <h3 cdkDragHandle> Title <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <span *ngIf="instructor!.title as title; else noData">{{title}}</span>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+        <div cdkDrag [fxFlexOrder]="instructorOrders[3]">
+          <h3 cdkDragHandle> Department <mat-icon fxFlex>drag_handle</mat-icon></h3>
+
+          <div *ngIf="instructor!.department as department; else noData">
+            <div>
+              Name:
+              <span *ngIf="department!.name as name; else noData">{{name}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Email:
+              <span *ngIf="department!.email as email; else noData">{{email}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Phone:
+              <span *ngIf="department!.phone as phone; else noData">{{phone}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Fax:
+              <span *ngIf="department!.fax as fax; else noData">{{fax}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Website:
+              <span *ngIf="department!.website as website; else noData">{{website}}</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+            <div>
+              Location:
+              <span *ngIf="department!.building as building; else noData">{{building!.code}} ({{building!.name}})</span>
+              <ng-template #noData>(None)</ng-template>
+            </div>
+
+          </div>
+          <ng-template #noData>(None)</ng-template>
+        </div>
+
+      </div>
+      <ng-template #noData>(Hover over a section to see details)</ng-template>
+
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

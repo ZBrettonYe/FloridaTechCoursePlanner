@@ -1,0 +1,118 @@
+<mat-card fxLayout="column" style="width: 100%; overflow: hidden; padding: 0px;">
+  <div fxFlex="grow" style="overflow-y: scroll;">
+    <table mat-table matSort [dataSource]="dataSource" style="width: 100%;">
+
+      <ng-container matColumnDef="crn">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>CRN</th>
+        <td mat-cell *matCellDef="let row">
+          {{row.crn}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Subject</th>
+        <td mat-cell *matCellDef="let row" (click)="cellClick('subject', row.subject)">
+          {{row.subject}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Course</th>
+        <td mat-cell *matCellDef="let row" (click)="cellClick('courseNumber', row.courseNumber)">
+          {{row.courseNumber}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+        <td mat-cell *matCellDef="let row" (click)="cellClick('title', row.title)">
+          {{row.title}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="instructor">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Instructor</th>
+        <td mat-cell *matCellDef="let row" (click)="cellClick('instructor', row.instructor)">
+          {{row.instructor}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="section">
+        <th mat-header-cell *matHeaderCellDef>Section</th>
+        <td mat-cell *matCellDef="let row">{{row.section}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="days">
+        <th mat-header-cell *matHeaderCellDef>Days</th>
+        <td mat-cell *matCellDef="let row">
+          <span *ngFor="let schedule of row.schedules">{{schedule.days}}<br></span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="times">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Times</th>
+        <td mat-cell *matCellDef="let row">
+          <div *ngFor="let schedule of row.schedules" style="white-space: nowrap;">
+            <span [style.color]="schedule.startTimeColor">{{schedule.startTime}}</span>
+            - <span [style.color]="schedule.endTimeColor">{{schedule.endTime}}</span>
+            <br>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="places">
+        <th mat-header-cell *matHeaderCellDef>Places</th>
+        <td mat-cell *matCellDef="let row">
+          <span *ngFor="let schedule of row.schedules" style="white-space: nowrap;">{{schedule.building}}
+            {{schedule.room}} <br>
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="enroll">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Enroll</th>
+        <td mat-cell *matCellDef="let row">
+          <span [style.color]="row.enroll.hslColor">{{row.enroll.cap[0]}}</span>
+          / {{row.enroll.cap[1]}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="creditHours">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-right: 0px;">CR.</th>
+        <td mat-cell *matCellDef="let row" style="padding-right: 0px;" (click)="cellClick('creditHours', row.creditHours[0])">
+          {{row.creditHours[0]}}
+          <span *ngIf="row.creditHours[0] !== row.creditHours[1]">- {{row.creditHours[1]}}</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (mouseover)="mouseover(row.index)"></tr>
+
+    </table>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <button
+      #updateButton
+      mat-button
+      color="primary"
+      [disabled]="timestamps.current === timestamps.update"
+      (click)="updateButtonClick()"
+      style="line-height: inherit;"
+    >
+      <span *ngIf="updateButton.disabled; else update">
+        Last Updated: <br>
+        {{timestamps.current * 1000 | date: 'short'}} <br>
+        You are up-to-date.
+      </span>
+      <ng-template #update>
+        Update Available: <br>
+        {{timestamps.update * 1000 | date: 'short'}} <br>
+        Click to Update
+      </ng-template>
+    </button>
+
+    <mat-paginator showFirstLastButtons [pageSizeOptions]="[50, 100, 200, 500]" (page)="scrollToTableTop()"></mat-paginator>
+  </div>
+</mat-card>

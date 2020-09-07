@@ -1,0 +1,25 @@
+span.prerequisite span.grade-requirement:hover {
+    background-color: rgba(198, 233, 157, 0.5);
+    border-radius: 4px;
+}
+
+span.prerequisite span.course {
+    color: royalblue;
+}
+
+span.prerequisite span.boolean.and {
+    color: orangered;
+}
+span.prerequisite span.boolean.or {
+    color: forestgreen;
+}
+
+span.prerequisite span.parenthesis-0 {
+    color: orchid;
+}
+span.prerequisite span.parenthesis-1 {
+    color: orange;
+}
+span.prerequisite span.parenthesis-2 {
+    color: dodgerblue;
+}

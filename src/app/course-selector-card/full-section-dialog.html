@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>This Section is Full</h1>
+<mat-dialog-content class="mat-typography">
+  <p>This section is full. You may need a closed class form to register. Do you want to add it anyway?</p>
+</mat-dialog-content>
+
+<div mat-dialog-actions fxLayoutGap="4px">
+  <button mat-stroked-button color="primary" [mat-dialog-close]="false">
+    Cancel
+  </button>
+
+  <button mat-stroked-button color="primary" [mat-dialog-close]="true">
+    Add it Anyway
+  </button>
+</div>
